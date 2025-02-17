@@ -51,7 +51,6 @@ pip install /services/cache_warmer
 ```shell
 chmod +x /services/cache_warmer/src/cache_warmer/scheduler.py
 cp /services/cache_warmer/src/cache_warmer/cache_warmer.service /etc/systemd/system/cache_warmer.service
-
 ```
 
 # service handling
