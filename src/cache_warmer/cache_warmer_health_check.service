@@ -1,0 +1,16 @@
+[Unit]
+Description=cache_warmer_health_check
+After=network.target
+
+[Service]
+ExecStart=/services/cache_warmer/venv/bin/python3 /services/cache_warmer/src/cache_warmer/scheduler_health_check.py
+Restart=always
+User=root
+WorkingDirectory=/services
+
+# Logging settings
+StandardOutput=append:/var/log/cache_warmer_health_check.log
+StandardError=append:/var/log/cache_warmer_health_check.log
+
+[Install]
+WantedBy=multi-user.target
