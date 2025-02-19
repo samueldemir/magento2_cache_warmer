@@ -1,4 +1,4 @@
-# Contributions
+# contributions
 
 Before contributing, please set up the pre-commit hooks to reduce
 errors and ensure consistency
@@ -15,7 +15,7 @@ The codebase is tested on python3.11.
 
 # configure server
 
-The codebase is tested on an fresh ubuntu 22.04 instance.
+The codebase is tested on a fresh ubuntu 22.04 instance.
 ```shell
 apt update && apt upgrade -y
 apt install software-properties-common -y
@@ -26,10 +26,10 @@ apt install -y python3.11 python3.11-venv python3.11-dev curl build-essential
 
 # ci/cd
 
-You can use the azure devops ci/cd file. Please setup the ssh service endpoint in 
+You can use the azure devops ci/cd file. Please set up the ssh service endpoint in 
 devops and name it: ``ssh_service_server``.
 
-# Install python package manually
+# install python package manually
 
 ```shell
 cd /
