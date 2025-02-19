@@ -12,7 +12,7 @@ def test_main():
     assert True
 
 
-def test_healt_check():
+def test_health_check():
     # only for debugging
     argv = [
         "-c",

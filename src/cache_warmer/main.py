@@ -61,31 +61,42 @@ def health_check(argv=None):
         cache_warmers = cache_warmer_factory.create()
         for cache_warmer in cache_warmers:
             cache_warmer.fetch_first = 5
-        results = run_cache_warmers(cache_warmers)
 
-        healt_checks_failed = {}
-        for cache_warmer_name, cache_warmer_result in results.items():
-            items = []
-            for result in cache_warmer_result:
-                status_code = result["status_code"]
-                url = result["url"]
-                if status_code != 200:
-                    items.append(f"{url} ({status_code})")
-            if len(items) > 0:
-                healt_checks_failed[cache_warmer_name] = (
-                    cache_warmer_name + ":<br>" + "<br>".join(items) + "<br><br>"
-                )
+        prev_status = "healthy"
+        msg_healthy = "cache_warmer_status: healthy"
+        send_teams_alert(webhook_url, msg_healthy)
+        while True:
+            results = run_cache_warmers(cache_warmers)
+            health_checks_failed, new_status = get_health_information(results)
+            if new_status != prev_status:
+                if new_status == "healthy":
+                    send_teams_alert(webhook_url, msg_healthy)
+                else:
+                    msg = ""
+                    for failed_health_check in health_checks_failed.values():
+                        msg += failed_health_check + "\n"
+                    send_teams_alert(webhook_url, msg)
+            prev_status = new_status
+            time.sleep(300)
 
-        if len(healt_checks_failed) > 0:
-            msg = ""
-            for failed_health_check in healt_checks_failed.values():
-                msg += failed_health_check + "\n"
 
-            msg = f"cache_warmer_status: Unhealthy<br> {msg} "
-            send_teams_alert(webhook_url, msg)
-        else:
-            msg = "cache_warmer_status: healty"
-            send_teams_alert(webhook_url, msg)
+def get_health_information(results: Dict) -> Tuple[Dict, str]:
+    health_checks_failed = {}
+    health_status_overall = "healthy"
+    for cache_warmer_name, cache_warmer_result in results.items():
+        items = []
+        for result in cache_warmer_result:
+            status_code = result["status_code"]
+            url = result["url"]
+            if status_code != 200:
+                items.append(f"{url} ({status_code})")
+        if len(items) > 0:
+            health_status_overall = "unhealthy"
+            health_checks_failed[cache_warmer_name] = (
+                cache_warmer_name + f" ({health_status_overall}):" + "<br>" + "<br>".join(items) + "<br><br>"
+            )
+
+    return health_checks_failed, health_status_overall
 
 
 def send_teams_alert(webhook_url, msg):
