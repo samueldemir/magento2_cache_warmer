@@ -50,7 +50,7 @@ setup(
     name="cache_warmer",
     version=__version__,
     author="Samuel Demir",
-    author_email="samuel.demir@galliker.com",
+    author_email="demir.samuel@outlook.de",
     description="A cache warmer for magento2.",
     license="proprietary",
     url="",
